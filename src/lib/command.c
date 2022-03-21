@@ -29,7 +29,7 @@ int init_sender(int argc, char *argv[], char **addr, int *port, FILE **input) {
     }
 
     if(argFile > 0 && argFile < argc) {
-        if(!(*input = fopen(argv[argFile], "r"))) {
+        if(!(*input = fopen(argv[argFile], "rb"))) {
             fprintf(stderr, "cannot read the file '%s'\n", argv[argFile]);
             return -1;
         }
