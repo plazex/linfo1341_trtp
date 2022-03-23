@@ -4,10 +4,11 @@ SENDER_DIR = src/sender
 RECEIVER_DIR = src/receiver
 
 .PHONY: all
+.PHONY: tests
 
-all: test sender receiver
+all: sender receiver
 
-test:
+tests:
 	$(MAKE) -C $(TEST_DIR)
 
 sender:

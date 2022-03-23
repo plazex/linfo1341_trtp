@@ -1,5 +1,5 @@
 # Thanks to Job Vranish (https://spin.atomicobject.com/2016/08/26/makefile-c-projects/)
-TARGET_EXEC := test
+TARGET_EXEC := tests
 
 BUILD_DIR := ../build/tests
 SRC_DIRS := . ../src/lib
