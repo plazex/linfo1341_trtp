@@ -1,0 +1,48 @@
+commit 3c09b7b9e437ef862865da8bc9177e3475b604e5
+Author: plazex <noah.meluzola@student.uclouvain.be>
+Date:   Mon Mar 21 06:26:54 2022 +0100
+
+    change the file reading method to binary
+
+ src/lib/command.c |  2 +-
+ src/lib/trtp.c    | 14 +++++++++++---
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+commit b5a40ae8eb785f874f5e05c3c4602c97fab27d8b
+Author: plazex <noah.meluzola@student.uclouvain.be>
+Date:   Sun Mar 20 21:38:17 2022 +0100
+
+    initial commit with simple udp sender and receiver
+
+ .gitignore               |   2 +
+ README.md                |   1 +
+ makefile                 |  22 ++++++++
+ src/lib/command.c        | 103 ++++++++++++++++++++++++++++++++++++++
+ src/lib/command.h        |  40 +++++++++++++++
+ src/lib/logger.c         |  78 +++++++++++++++++++++++++++++
+ src/lib/logger.h         |  58 ++++++++++++++++++++++
+ src/lib/trtp.c           |  38 ++++++++++++++
+ src/lib/trtp.h           |  30 +++++++++++
+ src/lib/udp.c            | 127 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/lib/udp.h            |  90 +++++++++++++++++++++++++++++++++
+ src/lib/utils.c          |  77 ++++++++++++++++++++++++++++
+ src/lib/utils.h          |  86 ++++++++++++++++++++++++++++++++
+ src/receiver/main.c      |  28 +++++++++++
+ src/receiver/makefile    |  46 +++++++++++++++++
+ src/sender/main.c        |  30 +++++++++++
+ src/sender/makefile      |  46 +++++++++++++++++
+ tests/main.c             |  42 ++++++++++++++++
+ tests/makefile           |  46 +++++++++++++++++
+ tests/test_command.c     | 106 +++++++++++++++++++++++++++++++++++++++
+ tests/test_command.h     |  11 ++++
+ tests/test_integration.c |  71 ++++++++++++++++++++++++++
+ tests/test_integration.h |  11 ++++
+ tests/test_logger.c      |  61 +++++++++++++++++++++++
+ tests/test_logger.h      |  16 ++++++
+ tests/test_trtp.c        |   4 ++
+ tests/test_trtp.h        |  10 ++++
+ tests/test_udp.c         |  49 ++++++++++++++++++
+ tests/test_udp.h         |  12 +++++
+ tests/test_utils.c       | 111 +++++++++++++++++++++++++++++++++++++++++
+ tests/test_utils.h       |  18 +++++++
+ 31 files changed, 1470 insertions(+)
