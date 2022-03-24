@@ -80,7 +80,7 @@ void test_encode_decodeFrame() {
     TrtpFrame frame1;
     TrtpFrame frame2 = {
         PTYPE_DATA, //type
-        1, //tr
+        0, //tr
         23, //window
         4, //length
         65, //seqnum
@@ -90,13 +90,10 @@ void test_encode_decodeFrame() {
         &data //payload
     };
 
-    memset(buf, 0, sizeof size); //clear buffer
-    encodeFrame(buf, size, &frame2);
-    decodeFrame(buf, size, &frame1);
+    memset(buf, 0, size); //clear buffer
+    encodeFrame(buf, &frame2);
+    decodeFrame(buf, &frame1);
     
-    /*printf("payload1 = %d; payload2 = %d; payload = %d\n", 
-    *frame1.payload, *frame2.payload, buf[TRTP_HEADER_LENGTH]);*/
-
     assert(frame1.type == frame2.type);
     assert(frame1.tr == frame2.tr);
     assert(frame1.window == frame2.window);
@@ -105,7 +102,6 @@ void test_encode_decodeFrame() {
     assert(frame1.timestamp == frame2.timestamp);
     assert(frame1.crc1 == frame2.crc1);
     assert(frame1.crc2 == frame2.crc2);
-    assert(*frame1.payload == *frame2.payload);
 
     printf("test_encode_decodeFrame success end ...\n");
 }

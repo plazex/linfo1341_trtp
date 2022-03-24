@@ -1,41 +1,38 @@
 #include "utils.h"
 
+//need to install:sudo apt-get install libz-dev
+#include <zlib.h>
+
 const uint8_t PTYPE_FEC  = 0b00;
 const uint8_t PTYPE_DATA = 0b01;
 const uint8_t PTYPE_ACK  = 0b10;
 const uint8_t PTYPE_NACK = 0b11;
 
-void encodeFrame(uint8_t *buf, int size, TrtpFrame* frame) {
-    if(size >= TRTP_HEADER_LENGTH) {
-        write2First(buf, frame->type);
-        writeThird(buf, frame->tr);
-        write5Last(buf, frame->window);
-        writeUInt16(buf, 1, frame->length);
-        buf[3] = frame->seqnum;
-        writeUInt32(buf, 4, frame->timestamp);
-        writeUInt32(buf, 8, frame->crc1);
-        memcpy(buf + TRTP_HEADER_LENGTH, frame->payload, frame->length);
+void encodeFrame(uint8_t *buf, TrtpFrame* frame) {
+    write2First(buf, frame->type);
+    writeThird(buf, frame->tr);
+    write5Last(buf, frame->window);
+    writeUInt16(buf, 1, frame->length);
+    buf[3] = frame->seqnum;
+    writeUInt32(buf, 4, frame->timestamp);
+    writeUInt32(buf, 8, frame->crc1);
 
-        if(size >= TRTP_HEADER_LENGTH + frame->length + 4) {
-            writeUInt32(buf, TRTP_HEADER_LENGTH + frame->length, frame->crc2);
-        }
+    if(frame->tr == 0 && frame->type == PTYPE_DATA) {
+        writeUInt32(buf, HEADER_LENGTH + frame->length, frame->crc2);
     }
 }
 
-void decodeFrame(char *buf, int size, TrtpFrame* frame) {
-    if(size >= TRTP_HEADER_LENGTH) {
-        frame->type = read2First(buf[0]);
-        frame->tr = readThird(buf[0]);
-        frame->window = read5Last(buf[0]);
-        frame->length = readUInt16(buf, 1);
-        frame->seqnum = (uint8_t)buf[3];
-        frame->timestamp = readUInt32(buf, 4);
-        frame->crc1 = readUInt32(buf, 8);
-        frame->payload = &buf[TRTP_HEADER_LENGTH];
+void decodeFrame(char *buf, TrtpFrame* frame) {
+    frame->type = read2First(buf[0]);
+    frame->tr = readThird(buf[0]);
+    frame->window = read5Last(buf[0]);
+    frame->length = readUInt16(buf, 1);
+    frame->seqnum = (uint8_t)buf[3];
+    frame->timestamp = readUInt32(buf, 4);
+    frame->crc1 = readUInt32(buf, 8);
 
-        if(size >= TRTP_HEADER_LENGTH + frame->length + 4) {
-            frame->crc2 = readUInt32(buf, TRTP_HEADER_LENGTH + frame->length);
-        }
+    if(frame->tr == 0 && frame->type == PTYPE_DATA) {
+        frame->crc2 = readUInt32(buf, HEADER_LENGTH + frame->length);
     }
 }
 

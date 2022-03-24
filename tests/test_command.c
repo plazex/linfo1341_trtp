@@ -88,7 +88,7 @@ void test_init_receiver() {
     assert(strcmp(addr, strAddr) == 0);
     assert(port == testPort);
     assert(stdout_file != NULL);
-
+    
     closeFiles();
     argc = 7; port = 0; addr = NULL;
 

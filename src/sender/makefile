@@ -28,7 +28,7 @@ CPPFLAGS := $(INC_FLAGS) -MMD -MP
 # The final build step.
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	mkdir -p $(@D)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+	$(CC) $(OBJS) -o $@ $(LDFLAGS) -lz
 	cp $(BUILD_DIR)/$(TARGET_EXEC) ../../$(TARGET_EXEC)
 
 # Build step for C source

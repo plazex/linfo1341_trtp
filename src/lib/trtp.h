@@ -10,6 +10,9 @@
 
 #include <poll.h>
 
+int window_size;
+
+int trtp_send_data(FILE *pfile, UdpSocket *udpSocket, char *buf, TrtpFrame *frame);
 
 /*!
  * Send the given file using trtp. 

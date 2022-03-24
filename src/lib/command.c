@@ -79,7 +79,7 @@ int init_receiver(int argc, char *argv[], char **addr, int *port) {
             argAddr = i;
         }
     }
-
+    
     if(argAddr > 0 && argAddr + 1 < argc) {
         *addr = argv[argAddr];
         *port = atoi(argv[argAddr + 1]);

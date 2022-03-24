@@ -8,7 +8,10 @@
 #include <stdint.h>
 #include <string.h>
 
-#define TRTP_HEADER_LENGTH 12
+#define MAX_WINDOW_SIZE 31
+#define HEADER_LENGTH 12
+#define MAX_PAYLOAD 512
+#define MAX_FRAME HEADER_LENGTH + MAX_PAYLOAD + 4
 
 /*!
  *  Stat format enum.
@@ -58,10 +61,9 @@ const uint8_t PTYPE_NACK;
  * Encode the given frame in a buffer.
  * It requires that the buffer is initialized and empty.
  * \param buf : data buffer
- * \param size : buffer size
  * \param frame : the frame to encode
  */
-void encodeFrame(uint8_t *buf, int size, TrtpFrame* frame);
+void encodeFrame(uint8_t *buf, TrtpFrame* frame);
 
 /*!
  * Decode the given buffer and fill the frame
@@ -69,7 +71,7 @@ void encodeFrame(uint8_t *buf, int size, TrtpFrame* frame);
  * \param size : buffer size
  * \param frame : the frame to fill
  */
-void decodeFrame(char *buf, int size, TrtpFrame* frame);
+void decodeFrame(char *buf, TrtpFrame* frame);
 
 void write2First(uint8_t *buf, uint8_t value);
 void writeThird(uint8_t *buf, uint8_t value);
