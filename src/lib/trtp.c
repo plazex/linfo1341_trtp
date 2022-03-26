@@ -5,8 +5,23 @@
 #include <zlib.h>
 
 #define TIMEOUT 200 //start with static timeout
+#define RCV_WINDOW_SIZE 4 //size of the receiver window
 
 int window_size = 1; // taille de fenetre initiale
+
+int trtp_send_response(UdpSocket *udpSocket, char *buf, TrtpFrame *frame, uint8_t type)
+{
+    frame->type = type;
+    frame->tr = 0;
+    frame->window = window_size;
+    frame->timestamp = (int)time(NULL);
+    frame->length = 0;
+    frame->crc1 = crc32(0L, (char *)frame, HEADER_LENGTH - 4); //crc32 with frame memory
+
+    memset(buf, 0, HEADER_LENGTH);
+    encodeFrame(buf, frame);
+    return udp_send(buf, HEADER_LENGTH, udpSocket);
+}
 
 int trtp_send_data(FILE *pfile, UdpSocket *udpSocket, char *buf, TrtpFrame *frame) {
     int length, total_length;
@@ -45,6 +60,8 @@ int trtp_send(FILE *pfile, UdpSocket *udpSocket) {
     payload_size = ftell(pfile);
     nb_frames = payload_size / MAX_PAYLOAD;
     fseek(pfile, 0L, SEEK_SET);
+
+    frame.timestamp = payload_size;
     
     for(;;) { // Main loop
         if(send_base >= nb_frames) {
@@ -52,14 +69,13 @@ int trtp_send(FILE *pfile, UdpSocket *udpSocket) {
         }
         pool_timer = TIMEOUT;
         for(seqnum = send_base; seqnum < nb_frames && seqnum < send_base + window_size; seqnum++) {
-            int old_timer = timestamps[seqnum - send_base];
+            int old_timer = timestamps[seqnum % window_size];
             int new_timer = (int)time(NULL);
             int last_time = new_timer - old_timer;
 
             if(old_timer >= 0 && last_time > TIMEOUT) {
-                timestamps[seqnum - send_base] = new_timer;
+                timestamps[seqnum % window_size] = new_timer;
                 frame.seqnum = seqnum;
-                frame.timestamp = new_timer;
                 if(trtp_send_data(pfile, udpSocket, buf, &frame) < 0) {
                     return -1;
                 }
@@ -86,27 +102,26 @@ int trtp_send(FILE *pfile, UdpSocket *udpSocket) {
             if(crc32(0L, (char *)&frame, HEADER_LENGTH - 4) != frame.crc1) { //wrong crc1
                 continue;
             }
-            if(frame.seqnum < send_base || frame.seqnum >= send_base + window_size) { //out of order
+            if(frame.seqnum < send_base || frame.seqnum >= send_base + window_size) { //out of the window
                 continue;
             }
             
-            window_size = frame.window; // update the window size 
+            if(send_base == 0) { //set only one time
+                window_size = frame.window; // update the window size 
+            }
+            
             if(frame.type == PTYPE_ACK) {
-                int shift = frame.seqnum - send_base + 1;
-                // rearange the timestamp array
-                for(int i = 0; i < window_size; i++) {
-                    if(i + shift < window_size) {
-                        timestamps[i] = timestamps[i + shift];
-                    } else {
-                        timestamps[i] = 0;
-                    }
+                timestamps[frame.seqnum % window_size] = -1;
+                int count = 0;
+                while (timestamps[send_base % window_size] == -1 && count < window_size) {
+                    timestamps[send_base % window_size] = 0;
+                    send_base++;
+                    count++;
                 }
-                send_base = frame.seqnum + 1;
             } 
             else if(frame.type == PTYPE_NACK) {
                 int new_timer = (int)time(NULL);
                 timestamps[frame.seqnum - send_base] = new_timer;
-                frame.timestamp = new_timer;
                 if(trtp_send_data(pfile, udpSocket, buf, &frame) < 0) {
                     return -1;
                 }
@@ -117,13 +132,18 @@ int trtp_send(FILE *pfile, UdpSocket *udpSocket) {
 }
 
 int trtp_listen(UdpSocket *udpSocket) {   
-    int fd_count = 1; 
-    int numbytes;
-    char buf[MAX_PAYLOAD];
+    int total_size;
+    int send_base = 0, fd_count = 1, nb_frames = 0; 
+    char buf[MAX_FRAME]; //rcv buffer
+    char rcv_window[RCV_WINDOW_SIZE] = {0}; //rcv window
+    char *result = NULL; // data memory
     struct pollfd *pfds = malloc(sizeof(*pfds));
+    TrtpFrame frame;
 
     pfds[0].fd = udpSocket->sock;
     pfds[0].events = POLLIN;
+
+    window_size = RCV_WINDOW_SIZE;
     
     for(;;) { // Main loop
         if (poll(pfds, fd_count, -1) < 1) {
@@ -131,12 +151,44 @@ int trtp_listen(UdpSocket *udpSocket) {
             return -1;
         }
         if (pfds[0].revents & POLLIN) { // If data available
-            if ((numbytes = udp_receive(buf, MAX_PAYLOAD, udpSocket)) < 0) {
+            memset(buf, 0, MAX_FRAME);
+            if (udp_receive(buf, MAX_FRAME, udpSocket) < 0) {
                 return -1;
             }
-            printf("%s", buf);
-            if(buf[MAX_PAYLOAD - 1] == '\0') {
+            decodeFrame(buf, &frame);
+            if(frame.tr != 0) { //truncated: send nack
+                if(trtp_send_response(udpSocket, buf, &frame, PTYPE_NACK) < 0) {
+                    return -1;
+                }
+                continue;
+            }
+            if(crc32(0L, (char *)&frame, HEADER_LENGTH - 4) != frame.crc1) { //wrong crc1: ignored
+                continue;
+            }
+            if(frame.seqnum < send_base || frame.seqnum >= send_base + window_size) { //out of the window
+                continue;
+            }
+
+            if(result == NULL) {
+                total_size = frame.timestamp;
+                nb_frames = total_size / MAX_PAYLOAD;
+                memset(result, 0, total_size);
+            }
+
+            memcpy(result + (frame.seqnum * MAX_PAYLOAD), buf + HEADER_LENGTH, frame.length);
+
+            if(frame.seqnum == nb_frames - 1) {
+                result[total_size - 1] = '\0';
+                printf("%s", result);
                 break;
+            }
+
+            rcv_window[frame.seqnum % window_size] = 1;
+            int count = 0;
+            while (rcv_window[send_base % window_size] == 1 && count < window_size) {
+                rcv_window[send_base % window_size] = 0;
+                send_base++;
+                count++;
             }
         }
     }

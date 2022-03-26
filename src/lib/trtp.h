@@ -12,6 +12,7 @@
 
 int window_size;
 
+int trtp_send_response(UdpSocket *udpSocket, char *buf, TrtpFrame *frame, uint8_t type);
 int trtp_send_data(FILE *pfile, UdpSocket *udpSocket, char *buf, TrtpFrame *frame);
 
 /*!
