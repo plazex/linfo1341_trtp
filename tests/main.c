@@ -24,13 +24,15 @@ int main(int argc, char *argv[])
     test_udp_send_receive();
 
     printf("\n=========== TRTP tests\n");
+    test_trtp_send_response();
+    test_trtp_send_data();
     
     printf("\n=========== Command tests\n");
     test_init_sender();
     test_init_receiver();
 
     printf("\n=========== Integration tests\n");
-    test_send_receive_file();
+    //test_send_receive_file();
 
     printf("\n=========== logger tests\n");
     test_initStat();
