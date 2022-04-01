@@ -17,21 +17,21 @@
  *  Stat format enum.
  */
 enum StatType {
-    data_sent = 0, 
-    data_received = 1, 
-    data_truncated_received = 2,
-    fec_sent = 3,
-    fec_received = 4,
-    ack_sent = 5,
-    ack_received = 6,
-    nack_sent = 7,
-    nack_received = 8,
-    packet_ignored = 9,
-    min_rtt = 10,
-    max_rtt = 11,
-    packet_retransmitted = 12,
-    packet_duplicated = 13,
-    packet_recovered = 14
+    DATA_SENT = 0, 
+    DATA_RECEIVED = 1, 
+    DATA_TRUNCATED_RECEIVED = 2,
+    FEC_SENT = 3,
+    FEC_RECEIVED = 4,
+    ACK_SENT = 5,
+    ACK_RECEIVED = 6,
+    NACK_SENT = 7,
+    NACK_RECEIVED = 8,
+    PACKET_IGNORED = 9,
+    MIN_RTT = 10,
+    MAX_RTT = 11,
+    PACKET_RETRANSMITTED = 12,
+    PACKET_DUPLICATED = 13,
+    PACKET_RECOVERED = 14
 };
 
 /*!

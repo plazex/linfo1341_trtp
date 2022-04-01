@@ -15,7 +15,9 @@ void encodeFrame(uint8_t *buf, TrtpFrame* frame) {
     writeUInt16(buf, 1, frame->length);
     buf[3] = frame->seqnum;
     writeUInt32(buf, 4, frame->timestamp);
+    frame->crc1 = crc32(0L, buf, 8);
     writeUInt32(buf, 8, frame->crc1);
+    
 
     if(frame->tr == 0 && frame->type == PTYPE_DATA) {
         writeUInt32(buf, HEADER_LENGTH + frame->length, frame->crc2);
@@ -46,14 +48,14 @@ void write5Last(uint8_t *buf, uint8_t value) {
     buf[0] |= (uint8_t)(0b00011111 & value);
 }
 void writeUInt16(uint8_t *buf, int index, uint16_t value) {
-    buf[index++] = (uint8_t)(value & 0xff);
-	buf[index] = (uint8_t)((value & 0xff00) >> 8);
+    buf[index] = (uint8_t)(value & 0xff);
+	buf[index + 1] = (uint8_t)((value & 0xff00) >> 8);
 }
 void writeUInt32(uint8_t *buf, int index, uint32_t value) {
-    buf[index++] = (uint8_t)(value & 0xff);
-	buf[index++] = (uint8_t)((value & 0xff00) >> 8);
-	buf[index++] = (uint8_t)((value & 0xff0000) >> 16);
-	buf[index] = (uint8_t)((value & 0xff000000) >> 24);
+    buf[index] = (uint8_t)(value & 0xff);
+	buf[index + 1] = (uint8_t)((value & 0xff00) >> 8);
+	buf[index + 2] = (uint8_t)((value & 0xff0000) >> 16);
+	buf[index + 3] = (uint8_t)((value & 0xff000000) >> 24);
 }
 
 uint8_t read2First(char value) {
@@ -66,7 +68,7 @@ uint8_t read5Last(char value) {
     return (uint8_t)(value & 0b00011111);
 }
 uint16_t readUInt16(char *buf, int index) {
-    return (uint16_t)((uint8_t)(buf[1] << 0) | (uint8_t)(buf[2] << 8));
+    return (uint16_t)((uint8_t)(buf[index] << 0) | ((uint8_t)buf[index + 1] << 8));
 }
 uint32_t readUInt32(char *buf, int index) {
     return (uint32_t)((uint8_t)(buf[index] << 0) | ((uint8_t)buf[index + 1] << 8) |

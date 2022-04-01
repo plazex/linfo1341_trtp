@@ -95,8 +95,9 @@ int udp_send(const char *buf, int size, UdpSocket *udpSocket) {
     
 #ifdef TEST_DEBUG
     char s[INET6_ADDRSTRLEN];
-    fprintf(stderr, "talker: sent %d bytes to %s\n", numbytes, 
-        inet_ntop(udpSocket->client.sin6_family, &udpSocket->client.sin6_addr, s, INET6_ADDRSTRLEN));
+    fprintf(stderr, "client: sent %d bytes to [%s, %d]\n", numbytes, 
+        inet_ntop(udpSocket->client.sin6_family, &udpSocket->client.sin6_addr, s, INET6_ADDRSTRLEN),
+        (int)ntohs(udpSocket->client.sin6_port));
 #endif 
     
     return numbytes;
@@ -113,14 +114,11 @@ int udp_receive(char *buf, int size, UdpSocket *udpSocket) {
 		perror("udp receiving failed");
 		return -1;
 	}
-
 #ifdef TEST_DEBUG
     char s[INET6_ADDRSTRLEN];
-    fprintf(stderr, "listener: got packet from %s\n", inet_ntop(udpSocket->server.sin6_family, 
-        &udpSocket->server.sin6_addr, s, INET6_ADDRSTRLEN));
-    fprintf(stderr, "listener: packet is %d bytes long\n", numbytes);
-    buf[numbytes] = '\0';
-    fprintf(stderr, "listener: packet contains \"%s\"\n", buf);
+    fprintf(stderr, "server: got packet %d bytes long from [%s, %d]\n", numbytes,
+        inet_ntop(udpSocket->server.sin6_family, &udpSocket->server.sin6_addr, s, INET6_ADDRSTRLEN),
+        (int)ntohs(udpSocket->server.sin6_port));
 #endif 
 
     return numbytes;

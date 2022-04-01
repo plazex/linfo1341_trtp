@@ -13,6 +13,9 @@ void test_read2First();
 void test_readThird();
 void test_read5Last();
 
+void test_read_write_UInt16();
+void test_read_write_UInt32();
+
 void test_encode_decodeFrame();
 
 #endif //TEST_UTILS_H

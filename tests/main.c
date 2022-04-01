@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
     test_read2First();
     test_readThird();
     test_read5Last();
+    test_read_write_UInt16();
+    test_read_write_UInt32();
     test_encode_decodeFrame();
 
     printf("\n=========== UDP tests\n");
@@ -32,7 +34,7 @@ int main(int argc, char *argv[])
     test_init_receiver();
 
     printf("\n=========== Integration tests\n");
-    //test_send_receive_file();
+    test_send_receive_file();
 
     printf("\n=========== logger tests\n");
     test_initStat();

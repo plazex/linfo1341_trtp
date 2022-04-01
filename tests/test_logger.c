@@ -44,7 +44,7 @@ void test_printStat() {
     const char* test_file = "stat_test.txt";
     initStat(test_file);
     assert(stat_file != NULL);
-    printStat(data_received, 12);
+    printStat(DATA_RECEIVED, 12);
     closeFiles();
     assert(stat_file == NULL);
 

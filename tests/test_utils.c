@@ -72,6 +72,24 @@ void test_read5Last() {
     printf("test_read5Last success end ...\n");
 }
 
+void test_read_write_UInt16() {
+    printf("test_read_write_UInt16 start ...\n");
+    char buf[2];
+    uint16_t test = 356;
+    writeUInt16(buf, 0, test);
+    assert(readUInt16(buf, 0) == test);
+    printf("test_read_write_UInt16 success end ...\n");
+}
+
+void test_read_write_UInt32() {
+    printf("test_read_write_UInt32 start ...\n");
+    char buf[4];
+    uint32_t test = 8796545;
+    writeUInt32(buf, 0, test);
+    assert(readUInt32(buf, 0) == test);
+    printf("test_read_write_UInt32 success end ...\n");
+}
+
 void test_encode_decodeFrame() {
     printf("test_encode_decodeFrame start ...\n");
     int size = 20;
