@@ -13,9 +13,15 @@ void test_udp_open() {
     int port = 1239;
 
     //chek fake address: should failed
-    assert(udp_open(fakeAddr, port, port, &udpSocket) < 0);
-    // check openning
-    assert(udp_open(addr, port, port, &udpSocket) > 0);
+    assert(udp_open_server(fakeAddr, port, &udpSocket) < 0);
+    assert(udp_open_client(fakeAddr, port, &udpSocket) < 0);
+    // check openning server
+    assert(udp_open_server(addr, port, &udpSocket) > 0);
+    assert(udpSocket.sock >= 0);
+    udp_close(&udpSocket);
+    assert(udpSocket.sock < 0);
+    // check openning client
+    assert(udp_open_client(addr, port, &udpSocket) > 0);
     assert(udpSocket.sock >= 0);
     udp_close(&udpSocket);
     assert(udpSocket.sock < 0);

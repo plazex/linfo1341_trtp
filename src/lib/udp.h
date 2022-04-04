@@ -25,8 +25,7 @@
 typedef struct UdpSocket
 {
     int sock;
-    struct sockaddr_in6 client;
-    struct sockaddr_in6 server;
+    struct sockaddr_in6 node; // address node
 } UdpSocket;
 
 /*!
@@ -53,15 +52,6 @@ int udp_open_server(const char *addr, int port, UdpSocket *udpSocket);
  * \return -1 when an error occured, otherwise 1.
  */
 int udp_open_client(const char *addr, int port, UdpSocket *udpSocket);
-
-/*!
- * Opens the socket for listening to incomming connection and sending data.
- * \param addr : sending address, must be NULL for server
- * \param port : server listening port number
- * \param udpSocket : the socket and address info to initialize
- * \return -1 when an error occured, otherwise 1.
- */
-int udp_open(const char *addr, int port, int myPort, UdpSocket *udpSocket);
 
 /*!
  * Close the given udp socket.

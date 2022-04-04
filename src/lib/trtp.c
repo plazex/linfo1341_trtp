@@ -108,6 +108,12 @@ int trtp_send(FILE *pfile, UdpSocket *udpSocket) {
         
         pool_result = poll(pfds, fd_count, pool_timer);
 
+        int rtt = (int)clock() - timestamps[send_base % window_size];
+        if(rtt < min_rtt) min_rtt = rtt;
+        if(rtt > max_rtt) max_rtt = rtt;
+
+        smoothed_rtt = ((1 - alpha) * smoothed_rtt) + (alpha * rtt); // update the smoothed RTT
+        
         if(pool_result > 0 && pfds[0].revents & POLLIN) { // If ack or nack is available
             memset(buf, 0, HEADER_LENGTH);
             if (udp_receive(buf, HEADER_LENGTH, udpSocket) < 0) {
@@ -129,12 +135,6 @@ int trtp_send(FILE *pfile, UdpSocket *udpSocket) {
             if(frame.seqnum < send_base || frame.seqnum >= send_base + window_size) { //out of the window
                 continue;
             }
-
-            int rtt = (int)clock() - timestamps[send_base % window_size];
-            if(rtt < min_rtt) min_rtt = rtt;
-            if(rtt > max_rtt) max_rtt = rtt;
-
-            smoothed_rtt = ((1 - alpha) * smoothed_rtt) + (alpha * rtt); // update the smoothed RTT
 
             if(frame.type == PTYPE_ACK) {
                 ack_received++; // incr ack received
