@@ -4,6 +4,16 @@
 #include <stdio.h>
 #include <assert.h>
 
+void test_xor() {
+    printf("test_xor start ...\n");
+    char var1 = 0b10100101;
+    char var2 = 0b01000101;
+    char res  = 0b11100000;
+    xor(&var1, &var2, 1, 1);
+    assert(var1 == res);
+    printf("test_xor success end ...\n");
+}
+
 void test_write2First() {
     printf("test_write2First start ...\n");
     uint8_t test = 0; // empty

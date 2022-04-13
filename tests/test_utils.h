@@ -5,6 +5,8 @@
 #ifndef TEST_UTILS_H
 #define TEST_UTILS_H
 
+void test_xor();
+
 void test_write2First();
 void test_writeThird();
 void test_write5Last();

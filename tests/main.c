@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
 {
     printf("==================== test cases ==================\n");
     printf("\n=========== Utils tests\n");
+    test_xor();
     test_write2First();
     test_writeThird();
     test_write5Last();

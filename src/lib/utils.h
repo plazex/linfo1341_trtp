@@ -73,6 +73,16 @@ void encodeFrame(uint8_t *buf, TrtpFrame* frame);
  */
 void decodeFrame(char *buf, TrtpFrame* frame);
 
+/*!
+ * Apply the xor operation for the given arrays and 
+ *  store the result in the first one
+ * \param target : keep the final result
+ * \param buf : buffer
+ * \param length1 : the length of the first array
+ * \param length2 : the length of the second array
+ */
+void xor(char *target, char* buf, int length1, int length2);
+
 void write2First(uint8_t *buf, uint8_t value);
 void writeThird(uint8_t *buf, uint8_t value);
 void write5Last(uint8_t *buf, uint8_t value);

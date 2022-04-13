@@ -38,6 +38,12 @@ void decodeFrame(char *buf, TrtpFrame* frame) {
     }
 }
 
+void xor(char *target, char* buf, int length1, int length2) {
+    for(int i = 0; i < length1 && i < length2; i++) {
+        target[i] = target[i] ^ buf[i];
+    }
+}
+
 void write2First(uint8_t *buf, uint8_t value) {
     buf[0] |= (uint8_t)(0b11000000 & (value << 6));
 }

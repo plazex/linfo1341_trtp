@@ -8,13 +8,14 @@ int check_file_input(FILE *input) {
     return (fseek(stdin, 0, SEEK_END), ftell(stdin));
 }
 
-int init_sender(int argc, char *argv[], char **addr, int *port, FILE **input) {
+int init_sender(int argc, char *argv[], char **addr, int *port, int *fec, FILE **input) {
     if(argc < 2) {
         fprintf(stderr, "number of arguments incorrect\n");
         return -1;
     }
 
-    int argFile = 0, argAddr = 0, argStat = 0, argLog = 0;
+    int argFile = 0, argAddr = 0, argStat = 0, argLog = 0, argFec = 0;
+    *fec = 0;
 
     for(int i = 1; i < argc; i+=2) {
         if(strcmp(argv[i], "-f") == 0) {
@@ -23,6 +24,8 @@ int init_sender(int argc, char *argv[], char **addr, int *port, FILE **input) {
             argStat = i + 1;
         } else if(strcmp(argv[i], "-l") == 0) {
             argLog = i + 1;
+        } else if(strcmp(argv[i], "-c") == 0) {
+            *fec = 1;
         } else {
             argAddr = i;
         }

@@ -47,11 +47,11 @@ void* run_sender() {
     char *str_addr = "::1";
 
     int argc = 5;
-    int port;
+    int port, fec;
     char *addr;
     FILE *file;
     UdpSocket socket;
-    char *argv[] = {"sender", "-f", integr_test_tosend, str_addr, str_port};
+    char *argv[] = {"sender", "-c", "-f", integr_test_tosend, str_addr, str_port};
 
     // creation of the file to send
     FILE *pfile_test = fopen(integr_test_tosend, "w");
@@ -59,12 +59,13 @@ void* run_sender() {
     fputs(integr_test_content, pfile_test);
     assert(fclose(pfile_test) == 0);
 
-    assert(init_sender(argc, argv, &addr, &port, &file) > 0);
+    assert(init_sender(argc, argv, &addr, &port, &fec, &file) > 0);
     assert(strcmp(addr, str_addr) == 0);
     assert(port == test_port);
+    assert(fec == 1);
 
     assert(udp_open_client(addr, port, &socket) > 0);
-    assert(trtp_send(file, &socket) > 0);
+    assert(trtp_send(file, &socket, fec) > 0);
 }
 
 void* run_receiver() {

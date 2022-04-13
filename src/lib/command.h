@@ -21,10 +21,11 @@ int check_file_input(FILE *input);
  * \param argv : arguments
  * \param addr : address IPv6
  * \param port : port number
+ * \param fec : use fec data type
  * \param input : pointer to the file to send
  * \return -1 when an error occured, otherwise 1.
  */
-int init_sender(int argc, char *argv[], char **addr, int *port, FILE **input);
+int init_sender(int argc, char *argv[], char **addr, int *port, int *fec, FILE **input);
 
 /*!
  * Initialize the needed attributes to receive data from
