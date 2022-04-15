@@ -7,12 +7,12 @@
 
 int main(int argc, char *argv[])
 {
-    int port, fec;
+    int port;
     char *addr;
     FILE *pfile;
     UdpSocket udp_sock;
 
-    if(init_sender(argc, argv, &addr, &port, &fec, &pfile) < 0) {
+    if(init_sender(argc, argv, &addr, &port, &pfile) < 0) {
         return EXIT_FAILURE;
     }
 
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
     
-    if(trtp_send(pfile, &udp_sock, fec) < 0) {
+    if(trtp_send(pfile, &udp_sock) < 0) {
         return EXIT_FAILURE;
     }
     closeFiles();

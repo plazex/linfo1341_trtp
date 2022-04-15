@@ -20,4 +20,6 @@ receiver:
 .PHONY: clean
 
 clean:
-	rm -r $(BUILD_DIR)
+	rm -f -r $(BUILD_DIR)
+	rm -f sender
+	rm -f receiver

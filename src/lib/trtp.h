@@ -11,6 +11,18 @@
 #include <poll.h>
 
 /*!
+ * Check randomly if the loss should be applied.
+ * \return 1 to apply loss, otherwise 0
+ */
+int apply_loss();
+
+/*!
+ * Check randomly if the truncation should be applied.
+ * \return 1 to truncate, otherwise 0
+ */
+int apply_truncate();
+
+/*!
  * Send a response frame (ACK or NACK) to the given socket. 
  * \param udpSocket: the receiver socket
  * \param buf: buffer to write the frame
@@ -43,10 +55,9 @@ int trtp_send_fec(UdpSocket *udpSocket, char *fec_buf, char *buf, TrtpFrame *fra
  * Send the given file using trtp. 
  * \param pfile: file to send
  * \param udpSocket: the socket and address info to listen
- * \param use_fec: use the fec data type
  * \return -1 when an error occured, otherwise 1
  */
-int trtp_send(FILE *pfile, UdpSocket *udpSocket, int use_fec);
+int trtp_send(FILE *pfile, UdpSocket *udpSocket);
 
 /*!
  * Listen continuously to the given socket. 

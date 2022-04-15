@@ -19,7 +19,7 @@ void encodeFrame(uint8_t *buf, TrtpFrame* frame) {
     writeUInt32(buf, 8, frame->crc1);
     
 
-    if(frame->tr == 0 && frame->type == PTYPE_DATA) {
+    if(frame->tr == 0 && (frame->type == PTYPE_DATA || frame->type == PTYPE_FEC)) {
         writeUInt32(buf, HEADER_LENGTH + frame->length, frame->crc2);
     }
 }
@@ -33,7 +33,7 @@ void decodeFrame(char *buf, TrtpFrame* frame) {
     frame->timestamp = readUInt32(buf, 4);
     frame->crc1 = readUInt32(buf, 8);
 
-    if(frame->tr == 0 && frame->type == PTYPE_DATA) {
+    if(frame->tr == 0 && (frame->type == PTYPE_DATA || frame->type == PTYPE_FEC)) {
         frame->crc2 = readUInt32(buf, HEADER_LENGTH + frame->length);
     }
 }
