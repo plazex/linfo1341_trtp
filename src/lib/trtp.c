@@ -394,7 +394,7 @@ int trtp_listen(UdpSocket *udpSocket) {
             if(frame.seqnum == send_base) { // in order
                 while (rcv_window[index] == 1) {
                     fprintf(stderr, "RECV: write data seqnum %d at index=%d\n", send_base, (index * MAX_PAYLOAD));
-                    printf("%.*s", MAX_PAYLOAD, rcv_data + (index * MAX_PAYLOAD));
+                    fwrite(rcv_data + (index * MAX_PAYLOAD), 1, frame.length, stdout);
                     rcv_window[index] = 0;
                     send_base++;
                     index = send_base % window_size;

@@ -77,6 +77,9 @@ int init_sender(int argc, char *argv[], char **addr, int *port, FILE **input) {
     if(argAddr > 0 && argAddr + 1 < argc) {
         *addr = argv[argAddr];
         *port = atoi(argv[argAddr + 1]);
+        if(strcmp(argv[argAddr], "localhost") == 0) { //inet_pton does not handle localhost
+            *addr = "::1";
+        }
     } else {
         fprintf(stderr, "incorrect arguments\n%s", help);
         return -1;
@@ -140,6 +143,9 @@ int init_receiver(int argc, char *argv[], char **addr, int *port) {
     if(argAddr > 0 && argAddr + 1 < argc) {
         *addr = argv[argAddr];
         *port = atoi(argv[argAddr + 1]);
+        if(strcmp(argv[argAddr], "localhost") == 0) { //inet_pton does not handle localhost
+            *addr = "::1";
+        }
     } else {
         fprintf(stderr, "incorrect arguments\n%s", help);
         return -1;

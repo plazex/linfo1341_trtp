@@ -36,7 +36,7 @@ void initStat(const char* filename) {
 void initStdout(const char* filename) {
     // delete file if it exists
     remove(filename);
-    stdout_file = freopen(filename,"a", stdout);
+    stdout_file = freopen(filename,"ab", stdout);
 }
 
 void closeFiles() {
