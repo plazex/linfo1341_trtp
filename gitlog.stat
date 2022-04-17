@@ -1,3 +1,161 @@
+commit be1f4e7293e4c5bb646e1ce083810b329c4377f8
+Author: plazex <noah.gingu@gmail.com>
+Date:   Sun Apr 17 18:23:51 2022 +0200
+
+    correct writing binary file and handle localhost
+
+ src/lib/command.c | 6 ++++++
+ src/lib/logger.c  | 2 +-
+ src/lib/trtp.c    | 2 +-
+ 3 files changed, 8 insertions(+), 2 deletions(-)
+
+commit 2110baf7d2e4aececa7713a7cdabfa963ab4c62a
+Author: plazex <noah.gingu@gmail.com>
+Date:   Fri Apr 15 18:27:28 2022 +0200
+
+    update readme
+
+ README.md | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
+
+commit e6f23ee4a495ec2703ab08e7dc9507fd5dd22166
+Author: plazex <noah.gingu@gmail.com>
+Date:   Fri Apr 15 18:03:59 2022 +0200
+
+    implement random truncate and loss packet
+
+ Makefile                 |   4 +-
+ src/lib/command.c        |  84 ++++++++++++++++++++++++++-----
+ src/lib/command.h        |  43 ++++++++++++++--
+ src/lib/trtp.c           | 126 ++++++++++++++++++++++++++++++++++++++---------
+ src/lib/trtp.h           |  15 +++++-
+ src/lib/utils.c          |   4 +-
+ src/sender/main.c        |   6 +--
+ tests/test_command.c     |  38 +++++++-------
+ tests/test_integration.c |  19 ++++---
+ 9 files changed, 268 insertions(+), 71 deletions(-)
+
+commit 088548f39591d43c2e58fbf089432c4651ee74f8
+Author: plazex <noah.gingu@gmail.com>
+Date:   Wed Apr 13 07:03:33 2022 +0200
+
+    FEC implementation
+
+ src/lib/command.c        |   7 ++-
+ src/lib/command.h        |   3 +-
+ src/lib/trtp.c           | 155 ++++++++++++++++++++++++++++++++++-------------
+ src/lib/trtp.h           |  13 +++-
+ src/lib/utils.c          |   6 ++
+ src/lib/utils.h          |  10 +++
+ src/sender/main.c        |   6 +-
+ tests/main.c             |   1 +
+ tests/test_command.c     |  24 +++++---
+ tests/test_integration.c |   9 +--
+ tests/test_utils.c       |  10 +++
+ tests/test_utils.h       |   2 +
+ 12 files changed, 183 insertions(+), 63 deletions(-)
+
+commit 609b5263957558d011687a7ffa70ac265ecb2a5f
+Author: plazex <noah.gingu@gmail.com>
+Date:   Mon Apr 4 10:57:35 2022 +0200
+
+    update udp send and receive on unique sock_addr
+
+ src/lib/trtp.c           | 12 ++++----
+ src/lib/udp.c            | 65 +++++++++++++------------------------------
+ src/lib/udp.h            | 12 +-------
+ tests/test_integration.c | 72 +++++++++++++++++++++---------------------------
+ tests/test_udp.c         | 12 ++++++--
+ 5 files changed, 66 insertions(+), 107 deletions(-)
+
+commit ef5deb0272d74edbc2afe7f439a5d36a02771923
+Author: plazex <noah.meluzola@student.uclouvain.be>
+Date:   Fri Apr 1 21:08:44 2022 +0200
+
+    implement trtp + trtp test
+
+ src/lib/trtp.c           |  99 +++++++++++++++++++++++++++++++----------
+ src/lib/udp.c            |  14 +++---
+ src/lib/utils.c          |  16 ++++---
+ src/lib/utils.h          |  30 ++++++-------
+ tests/main.c             |   4 +-
+ tests/makefile           |   2 +-
+ tests/test_integration.c | 113 +++++++++++++++++++++++++++++++++++------------
+ tests/test_logger.c      |   2 +-
+ tests/test_utils.c       |  18 ++++++++
+ tests/test_utils.h       |   3 ++
+ 10 files changed, 217 insertions(+), 84 deletions(-)
+
+commit 6412bdd31950d4253049e230fb1df7328312170d
+Author: plazex <noah.gingu@gmail.com>
+Date:   Sat Mar 26 17:50:31 2022 +0100
+
+    adding trtp send data and response tests
+
+ src/lib/trtp.c    | 137 ++++++++++++++++++++++++++++++++----------------------
+ src/lib/trtp.h    |  24 ++++++++--
+ tests/main.c      |   4 +-
+ tests/test_trtp.c |  98 +++++++++++++++++++++++++++++++++++++-
+ tests/test_trtp.h |   3 +-
+ 5 files changed, 203 insertions(+), 63 deletions(-)
+
+commit 3a3c4238eddbbd55fd66788b23d7aa6f3328ad4d
+Author: plazex <noah.gingu@gmail.com>
+Date:   Sat Mar 26 11:06:26 2022 +0100
+
+    trtp rcv implementation
+
+ src/lib/trtp.c | 94 +++++++++++++++++++++++++++++++++++++++++++++-------------
+ src/lib/trtp.h |  1 +
+ 2 files changed, 74 insertions(+), 21 deletions(-)
+
+commit 8bfecc87a3a397fdd504e4a4334c39d2ef26eb07
+Author: plazex <noah.gingu@gmail.com>
+Date:   Thu Mar 24 07:25:14 2022 +0100
+
+    trtp sending implementation
+
+ .idea/.gitignore      |   8 ----
+ .idea/misc.xml        |  18 --------
+ .idea/vcs.xml         |   6 ---
+ src/lib/command.c     |   2 +-
+ src/lib/trtp.c        | 120 +++++++++++++++++++++++++++++++++++++++++++++-----
+ src/lib/trtp.h        |   3 ++
+ src/lib/utils.c       |  49 ++++++++++-----------
+ src/lib/utils.h       |  10 +++--
+ src/receiver/makefile |   2 +-
+ src/sender/makefile   |   2 +-
+ tests/makefile        |   2 +-
+ tests/test_command.c  |   2 +-
+ tests/test_utils.c    |  12 ++---
+ 13 files changed, 150 insertions(+), 86 deletions(-)
+
+commit b8be2f6bf73a91e32ea1d66451a98bab5ac0dab0
+Author: plazex <noah.meluzola@student.uclouvain.be>
+Date:   Wed Mar 23 19:50:31 2022 +0100
+
+    update makefiles and add copy target at the root
+
+ .gitignore            | 3 ++-
+ Makefile              | 5 +++--
+ src/receiver/makefile | 1 +
+ src/sender/makefile   | 1 +
+ tests/makefile        | 2 +-
+ 5 files changed, 8 insertions(+), 4 deletions(-)
+
+commit 23d436b863fb2548ec7a72d6c45e4ed94af8c795
+Author: plazex <noah.gingu@gmail.com>
+Date:   Wed Mar 23 19:07:23 2022 +0100
+
+    ll
+
+ .idea/.gitignore     |  8 ++++++++
+ .idea/misc.xml       | 18 ++++++++++++++++++
+ .idea/vcs.xml        |  6 ++++++
+ makefile => Makefile |  0
+ gitlog.stat          | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 80 insertions(+)
+
 commit 3c09b7b9e437ef862865da8bc9177e3475b604e5
 Author: plazex <noah.meluzola@student.uclouvain.be>
 Date:   Mon Mar 21 06:26:54 2022 +0100
